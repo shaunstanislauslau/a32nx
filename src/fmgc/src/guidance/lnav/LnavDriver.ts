@@ -19,6 +19,7 @@ import { VMLeg } from '@fmgc/guidance/lnav/legs/VM';
 import { XFLeg } from '@fmgc/guidance/lnav/legs/XF';
 import { Coordinates } from '@fmgc/flightplanning/data/geo';
 import { FmgcFlightPhase } from '@shared/flightphase';
+import { FlightPlanService } from '@fmgc/flightplanning/new/FlightPlanService';
 import { GuidanceController, GuidanceComponent } from '@fmgc/guidance';
 
 /**
@@ -349,7 +350,7 @@ export class LnavDriver implements GuidanceComponent {
 
             // Update EFIS active waypoint info
 
-            this.updateEfisData(activeLeg, gs);
+            // this.updateEfisData(activeLeg, gs);
 
             // Sequencing
 
@@ -444,13 +445,10 @@ export class LnavDriver implements GuidanceComponent {
         return eta;
     }
 
-    sequenceLeg(_leg?: Leg, outboundTransition?: Transition): void {
-        let wpIndex = this.guidanceController.flightPlanManager.getActiveWaypointIndex(false, false, 0);
-        const wp = this.guidanceController.flightPlanManager.getActiveWaypoint(false, false, 0);
-        console.log(`[FMGC/Guidance] LNAV - sequencing leg. [WP: ${wp.ident} Active WP Index: ${wpIndex}]`);
-        wp.waypointReachedAt = SimVar.GetGlobalVarValue('ZULU TIME', 'seconds');
+    sequenceLeg(leg?: Leg, outboundTransition?: Transition): void {
+        FlightPlanService.active.sequence();
 
-        this.guidanceController.flightPlanManager.setActiveWaypointIndex(++wpIndex, () => {}, 0);
+        console.log(`[FMGC/Guidance] LNAV - sequencing leg. [new Index: ${FlightPlanService.active.activeLegIndex}]`);
 
         outboundTransition?.freeze();
 

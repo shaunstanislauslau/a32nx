@@ -37,6 +37,7 @@ import {
     placeBearingIntersection,
     smallCircleGreatCircleIntersection,
 } from 'msfs-geo';
+import { fixCoordinates } from '@fmgc/flightplanning/new/utils';
 import { Leg } from '../legs/Leg';
 import { CFLeg } from '../legs/CF';
 import { CRLeg } from '../legs/CR';
@@ -105,11 +106,13 @@ export class PathCaptureTransition extends Transition {
 
         const naturalTurnDirectionSign = Math.sign(MathUtils.diffAngle(targetTrack, this.nextLeg.inboundCourse));
 
-        let prevLegTermFix: LatLongAlt | Coordinates;
+        let prevLegTermFix: Coordinates;
         if (this.previousLeg instanceof AFLeg) {
             prevLegTermFix = this.previousLeg.arcEndPoint;
+        } else if ('lat' in this.previousLeg.terminationWaypoint) {
+            prevLegTermination = this.previousLeg.terminationWaypoint;
         } else {
-            prevLegTermFix = this.previousLeg.terminationWaypoint instanceof WayPoint ? this.previousLeg.terminationWaypoint.infos.coordinates : this.previousLeg.terminationWaypoint;
+            prevLegTermFix = fixCoordinates(this.previousLeg.terminationWaypoint.location);
         }
 
         // Start the transition before the termination fix if we are reverted because of an overshoot

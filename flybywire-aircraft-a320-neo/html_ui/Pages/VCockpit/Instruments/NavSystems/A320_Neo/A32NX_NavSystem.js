@@ -35,9 +35,10 @@ class NavSystem extends BaseInstrument {
         this.alwaysUpdateList = new Array();
         this.accumulatedDeltaTime = 0;
     }
-    get flightPlanManager() {
-        return this.currFlightPlanManager;
-    }
+    // TODO: DEPRECATE
+    // get flightPlanManager() {
+    //     return this.currFlightPlanManager;
+    // }
     get instrumentAlias() {
         return null;
     }
@@ -48,13 +49,22 @@ class NavSystem extends BaseInstrument {
         this.contextualMenuElements = this.getChildById("ContextualMenuElements");
         this.menuSlider = this.getChildById("SliderMenu");
         this.menuSliderCursor = this.getChildById("SliderMenuCursor");
-        this.currFlightPlanManager = new Fmgc.FlightPlanManager(this);
-        this.currFlightPlan = new Fmgc.ManagedFlightPlan();
+        // this.currFlightPlanManager = new Fmgc.FlightPlanManager(this); // TODO: DEPRECATE
+        // this.currFlightPlan = new Fmgc.ManagedFlightPlan(); // TODO: DEPRECATE
         this.currFlightPhaseManager = Fmgc.getFlightPhaseManager();
+        this.currFlightPlanService = Fmgc.FlightPlanService;
+        this.currNavigationDatabaseService = Fmgc.NavigationDatabaseService;
+        this.navigationDatabase = new Fmgc.NavigationDatabase(Fmgc.NavigationDatabaseBackend.Navigraph);
+        this.currNavigationDatabaseService.activeDatabase = this.navigationDatabase;
     }
     get flightPhaseManager() {
         return this.currFlightPhaseManager;
     }
+
+    get flightPlanService() {
+        return this.currFlightPlanService;
+    }
+
     disconnectedCallback() {
         super.disconnectedCallback();
     }

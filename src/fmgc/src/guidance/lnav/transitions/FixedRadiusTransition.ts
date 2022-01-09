@@ -18,6 +18,7 @@ import { LnavConfig } from '@fmgc/guidance/LnavConfig';
 import { Geo } from '@fmgc/utils/Geo';
 import { XFLeg } from '@fmgc/guidance/lnav/legs/XF';
 import { distanceTo } from 'msfs-geo';
+import { fixCoordinates } from '@fmgc/flightplanning/new/utils';
 import { PathVector, PathVectorType } from '../PathVector';
 import { CFLeg } from '../legs/CF';
 
@@ -106,7 +107,7 @@ export class FixedRadiusTransition extends Transition {
 
         // Check what the distance from the fix to the next leg is (to avoid being not lined up in some XF -> CF cases)
         const prevLegTermDistanceToNextLeg = Geo.distanceToLeg(
-            this.previousLeg instanceof XFLeg ? this.previousLeg.fix.infos.coordinates : this.previousLeg.intercept,
+            this.previousLeg instanceof XFLeg ? fixCoordinates(this.previousLeg.fix.location) : this.previousLeg.intercept,
             this.nextLeg,
         );
 
@@ -114,7 +115,7 @@ export class FixedRadiusTransition extends Transition {
         const forcedTurn = (this.nextLeg.metadata.turnDirection === TurnDirection.Left || this.nextLeg.metadata.turnDirection === TurnDirection.Right)
             && defaultTurnDirection !== this.nextLeg.metadata.turnDirection;
         const tooBigForPrevious = this.previousLeg.distanceToTermination < this.tad + 0.1;
-        const tooBigForNext = 'from' in this.nextLeg ? distanceTo(this.nextLeg.from.infos.coordinates, this.nextLeg.to.infos.coordinates) < this.tad + 0.1 : false;
+        const tooBigForNext = 'from' in this.nextLeg ? distanceTo(fixCoordinates(this.nextLeg.from.location), fixCoordinates(this.nextLeg.to.location)) < this.tad + 0.1 : false;
         const notLinedUp = Math.abs(prevLegTermDistanceToNextLeg) >= 0.25; // "reasonable" distance
 
         // in some circumstances we revert to a path capture transition where the fixed radius won't work well
@@ -239,7 +240,7 @@ export class FixedRadiusTransition extends Transition {
     private turningPoints;
 
     private computeTurningPoints(): [LatLongAlt, LatLongAlt] {
-        const { lat, long } = this.previousLeg instanceof CILeg ? this.previousLeg.intercept : this.previousLeg.fix.infos.coordinates;
+        const { lat, long } = this.previousLeg instanceof CILeg ? this.previousLeg.intercept : fixCoordinates(this.previousLeg.fix.location);
 
         const inbound = Avionics.Utils.bearingDistanceToCoordinates(
             mod(this.previousLeg.outboundCourse + 180, 360),

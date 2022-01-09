@@ -16,6 +16,7 @@ import {
 } from 'msfs-geo';
 import { AFLeg } from '@fmgc/guidance/lnav/legs/AF';
 import { TFLeg } from '@fmgc/guidance/lnav/legs/TF';
+import { fixCoordinates } from '@fmgc/flightplanning/new/utils';
 
 const sin = (input: Degrees) => Math.sin(input * (Math.PI / 180));
 
@@ -45,7 +46,7 @@ export class Geo {
         let legStartReference;
 
         if (leg instanceof TFLeg) {
-            legStartReference = leg.from.infos.coordinates;
+            legStartReference = fixCoordinates(leg.from.location);
         } else {
             legStartReference = leg.getPathStartPoint();
         }
@@ -92,7 +93,7 @@ export class Geo {
         const intersections1 = placeBearingIntersection(
             from,
             Avionics.Utils.clampAngle(bearing),
-            'fix' in leg ? leg.fix.infos.coordinates : leg.getPathEndPoint(),
+            'fix' in leg ? fixCoordinates(leg.fix.location) : leg.getPathEndPoint(),
             Avionics.Utils.clampAngle(leg.outboundCourse - 180),
         );
 

@@ -14,7 +14,6 @@ import { Transition } from '@fmgc/guidance/lnav/Transition';
 import { GuidanceParameters, LateralPathGuidance } from '@fmgc/guidance/ControlLaws';
 import { Coordinates } from '@fmgc/flightplanning/data/geo';
 import { Constants } from '@shared/Constants';
-import { Geometry } from '@fmgc/guidance/Geometry';
 import { PathVector, PathVectorType } from '@fmgc/guidance/lnav/PathVector';
 import { LnavConfig } from '@fmgc/guidance/LnavConfig';
 import { TurnDirection } from '@fmgc/types/fstypes/FSEnums';
@@ -25,7 +24,7 @@ import {
     arcGuidance,
     arcLength,
     courseToFixDistanceToGo,
-    courseToFixGuidance,
+    courseToFixGuidance, getRollAnticipationDistance,
     maxBank,
 } from '../CommonGeometry';
 import { CRLeg } from '../legs/CR';
@@ -106,7 +105,7 @@ export class DirectToFixTransition extends Transition {
         const termFix = this.previousLeg.getPathEndPoint();
 
         // FIXME fix for FX legs
-        const nextFix = this.nextLeg.fix.infos.coordinates;
+        const nextFix = fixCoordinates(this.nextLeg.fix.location);
 
         this.radius = (gs ** 2 / (Constants.G * tan(maxBank(tas, true))) / 6997.84) * LnavConfig.TURN_RADIUS_FACTOR;
 
@@ -124,7 +123,7 @@ export class DirectToFixTransition extends Transition {
 
         const currentRollAngle = isActive ? -SimVar.GetSimVarValue('PLANE BANK DEGREES', 'degrees') : 0;
         const rollAngleChange = Math.abs(turnDirectionSign * maxBank(tas, true) - currentRollAngle);
-        const rollAnticipationDistance = Geometry.getRollAnticipationDistance(gs, 0, rollAngleChange);
+        const rollAnticipationDistance = getRollAnticipationDistance(gs, 0, rollAngleChange);
 
         let itp = rollAnticipationDistance >= 0.05 ? placeBearingDistance(termFix, this.previousLeg.outboundCourse, rollAnticipationDistance) : termFix;
         let turnCentre = placeBearingDistance(itp, this.previousLeg.outboundCourse + turnDirectionSign * 90, this.radius);
@@ -345,7 +344,7 @@ export class DirectToFixTransition extends Transition {
                 bankNext = this.arcSweepAngle > 0 ? maxBank(tas, true) : -maxBank(tas, false);
             }
 
-            const rad = Geometry.getRollAnticipationDistance(tas, 0, bankNext);
+            const rad = getRollAnticipationDistance(tas, 0, bankNext);
 
             if (dtg <= rad) {
                 params.phiCommand = bankNext;

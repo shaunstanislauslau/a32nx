@@ -1,3 +1,6 @@
+import { FlightPlanService as Service } from "../src/fmgc/src";
+import { NavigationDatabase as Database, NavigationDatabaseBackend as DatabaseBackend } from '../src/fmgc/src/NavigationDatabase'
+import { FlightPlanIndex as Index } from '../src/fmgc/src';
 import { FlightPhaseManager as FlightPhaseManager_ } from "../src/fmgc/src";
 
 declare global {
@@ -39,7 +42,7 @@ declare global {
          * `true` if `window.ACE_ENGINE_HANDLE` is present and the instrument is using (but is not necessarily connected to) a remote bridge
          */
         ACE_IS_REMOTE: boolean | undefined
-        
+
         /**
          * `true` if `window.ACE_ENGINE_HANDLE` is present and `window.ACE_IS_REMOTE` is `true` and the instrument is connected to the sim through a remote bridge
          */
@@ -47,7 +50,17 @@ declare global {
     }
 
     namespace Fmgc {
+        const FlightPlanService: typeof Service
+
+        const NavigationDatabase: typeof Database
+
+        const NavigationDatabaseBackend: typeof DatabaseBackend
+
+        const FlightPlanIndex: typeof Index
+
         const FlightPhaseManager: typeof FlightPhaseManager_
+
+        function getFlightPhaseManager(): FlightPhaseManager_
     }
 }
 
