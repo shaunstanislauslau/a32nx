@@ -1,14 +1,15 @@
-import { ClockEvents, DisplayComponent, EventBus, FSComponent, Subscribable, VNode } from 'msfssdk';
-
-import './common.scss';
-
+import { FSComponent, ClockEvents, DisplayComponent, EventBus, Subscribable, VNode } from 'msfssdk';
 import { NXDataStore } from '@shared/persistence';
-import { PFDSimvars } from './PFDSimvarPublisher';
-import { getDisplayIndex } from '../PFD';
+import { DisplayVars } from './SimVarTypes';
+
+export const getDisplayIndex = () => {
+    const url = document.querySelectorAll('vcockpit-panel > *')[0].getAttribute('url');
+    return url ? parseInt(url.substring(url.length - 1), 10) : 0;
+};
 
 type DisplayUnitProps = {
     bus: EventBus,
-    failed: Subscribable<boolean>;
+    failed?: Subscribable<boolean>;
 }
 
 enum DisplayUnitState {
@@ -40,7 +41,7 @@ export class DisplayUnit extends DisplayComponent<DisplayUnitProps> {
     public onAfterRender(node: VNode): void {
         super.onAfterRender(node);
 
-        const sub = this.props.bus.getSubscriber<PFDSimvars & ClockEvents>();
+        const sub = this.props.bus.getSubscriber<DisplayVars & ClockEvents>();
         const isCaptainSide = getDisplayIndex() === 1;
 
         sub.on(isCaptainSide ? 'potentiometerCaptain' : 'potentiometerFo').whenChanged().handle((value) => {
@@ -60,7 +61,7 @@ export class DisplayUnit extends DisplayComponent<DisplayUnitProps> {
             }
         });
 
-        this.props.failed.sub((f) => {
+        this.props.failed?.sub((f) => {
             this.failed = f;
             this.updateState();
         });
@@ -117,21 +118,20 @@ export class DisplayUnit extends DisplayComponent<DisplayUnitProps> {
 
     render(): VNode {
         return (
-
             <>
-                <div ref={this.backLightBleedRef} class="BacklightBleed" />
+                <div ref={this.backLightBleedRef} className="BacklightBleed" />
 
-                <svg ref={this.selfTestRef} class="SelfTest" viewBox="0 0 600 600">
-                    <rect class="SelfTestBackground" x="0" y="0" width="100%" height="100%" />
+                <svg ref={this.selfTestRef} className="SelfTest" viewBox="0 0 600 600">
+                    <rect className="SelfTestBackground" x="0" y="0" width="100%" height="100%" />
                     <text
-                        class="SelfTestText"
+                        className="SelfTestText"
                         x="50%"
                         y="50%"
                     >
                         SELF TEST IN PROGRESS
                     </text>
                     <text
-                        class="SelfTestText"
+                        className="SelfTestText"
                         x="50%"
                         y="56%"
                     >
