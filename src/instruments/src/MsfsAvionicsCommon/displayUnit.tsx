@@ -119,19 +119,19 @@ export class DisplayUnit extends DisplayComponent<DisplayUnitProps> {
     render(): VNode {
         return (
             <>
-                <div ref={this.backLightBleedRef} className="BacklightBleed" />
+                <div ref={this.backLightBleedRef} class="BacklightBleed" />
 
-                <svg ref={this.selfTestRef} className="SelfTest" viewBox="0 0 600 600">
-                    <rect className="SelfTestBackground" x="0" y="0" width="100%" height="100%" />
+                <svg ref={this.selfTestRef} class="SelfTest" viewBox="0 0 600 600">
+                    <rect class="SelfTestBackground" x="0" y="0" width="100%" height="100%" />
                     <text
-                        className="SelfTestText"
+                        class="SelfTestText"
                         x="50%"
                         y="50%"
                     >
                         SELF TEST IN PROGRESS
                     </text>
                     <text
-                        className="SelfTestText"
+                        class="SelfTestText"
                         x="50%"
                         y="56%"
                     >
