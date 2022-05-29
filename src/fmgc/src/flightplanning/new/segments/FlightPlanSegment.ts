@@ -7,7 +7,6 @@ import { LegType, Waypoint } from 'msfs-navdata';
 import { FlightPlanElement } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
-import { FlightPlan } from '@fmgc/flightplanning/new/plans/FlightPlan';
 
 export abstract class FlightPlanSegment {
     abstract class: SegmentClass
