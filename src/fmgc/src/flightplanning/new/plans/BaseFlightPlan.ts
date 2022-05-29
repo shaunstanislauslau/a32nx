@@ -132,6 +132,12 @@ export abstract class BaseFlightPlan {
         return legs[index];
     }
 
+    maybeElementAt(index: number): FlightPlanElement {
+        const legs = this.allLegs;
+
+        return legs[index];
+    }
+
     private lastAllLegsVersion = -1;
 
     private cachedAllLegs = [];

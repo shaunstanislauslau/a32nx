@@ -19,6 +19,7 @@ import { VerticalFlightPlanBuilder } from './guidance/vnav/verticalFlightPlan/Ve
 import { initComponents, updateComponents, recallMessageById } from './components';
 import { WaypointBuilder } from './flightplanning/WaypointBuilder';
 import { FlightPlanIndex } from './flightplanning/new/FlightPlanManager';
+import { NavigationDatabaseService } from './flightplanning/new/NavigationDatabaseService';
 
 function initFmgcLoop(baseInstrument: BaseInstrument, flightPlanManager: FlightPlanManager): void {
     initComponents(baseInstrument, flightPlanManager);
@@ -32,6 +33,7 @@ export {
     FlightPlanService,
     NavigationDatabase,
     NavigationDatabaseBackend,
+    NavigationDatabaseService,
     FlightPlanIndex,
     FlightPhaseManager,
     getFlightPhaseManager,

@@ -18,6 +18,9 @@ import { HMLeg } from '@fmgc/guidance/lnav/legs/HX';
 import { SimVarString } from '@shared/simvar';
 import { getFlightPhaseManager } from '@fmgc/flightphase';
 import { FmgcFlightPhase } from '@shared/flightphase';
+import { fixCoordinates } from '@fmgc/flightplanning/new/utils';
+import { ApproachType } from 'msfs-navdata';
+import { normaliseApproachName } from '@shared/flightplan';
 import { LnavDriver } from './lnav/LnavDriver';
 import { FlightPlanManager } from '../flightplanning/FlightPlanManager';
 import { GuidanceManager } from './GuidanceManager';
@@ -171,7 +174,7 @@ export class GuidanceController {
         let apprMsg = '';
         // const appr = this.flightPlanManager.getApproach(FlightPlans.Active);
         const appr = FlightPlanService.active.approach;
-        if (appr && appr.approachType !== ApproachType.APPROACH_TYPE_UNKNOWN) {
+        if (appr && appr.type !== ApproachType.Unknown) {
             const phase = getFlightPhaseManager().phase;
             if (phase > FmgcFlightPhase.Cruise || (phase === FmgcFlightPhase.Cruise /* && this.flightPlanManager.getDistanceToDestination(FlightPlans.Active) < 250) */)) {
                 apprMsg = normaliseApproachName(appr.ident);

@@ -146,30 +146,30 @@ class CDUFlightPlanPage {
 
             const {wp, pwp, marker, holdResumeExit, fpIndex} = waypointsAndMarkers[winI];
 
-            const wpPrev = fpm.getWaypoint(fpIndex - 1);
-            const wpNext = fpm.getWaypoint(fpIndex + 1);
-            const wpActive = (fpIndex >= fpm.getActiveWaypointIndex());
+            const wpPrev = mcdu.flightPlanService.activeOrTemporary.maybeElementAt(fpIndex - 1);
+            const wpNext = mcdu.flightPlanService.activeOrTemporary.maybeElementAt(fpIndex + 1);
+            const wpActive = (fpIndex >= mcdu.flightPlanService.activeOrTemporary.activeLegIndex);
 
             // Bearing/Track
-            let bearingTrack = "";
-            const bearingTrackTo = wp ? wp : wpNext;
-            if (wpPrev && bearingTrackTo && bearingTrackTo.additionalData.legType !== 14 /* HM */) {
-                const magVar = Facilities.getMagVar(wpPrev.infos.coordinates.lat, wpPrev.infos.coordinates.long);
-                switch (rowI) {
-                    case 1:
-                        if (fpm.getActiveWaypointIndex() === fpIndex) {
-                            const br = fpm.getBearingToActiveWaypoint();
-                            const bearing = A32NX_Util.trueToMagnetic(br, magVar);
-                            bearingTrack = `BRG${bearing.toFixed(0).toString().padStart(3,"0")}\u00b0`;
-                        }
-                        break;
-                    case 2:
-                        const tr = Avionics.Utils.computeGreatCircleHeading(wpPrev.infos.coordinates, bearingTrackTo.infos.coordinates);
-                        const track = A32NX_Util.trueToMagnetic(tr, magVar);
-                        bearingTrack = `{${fpm.isCurrentFlightPlanTemporary() ? "yellow" : "green"}}TRK${track.toFixed(0).padStart(3,"0")}\u00b0{end}`;
-                        break;
-                }
-            }
+            const bearingTrack = "";
+            // const bearingTrackTo = wp ? wp : wpNext; TODO port over
+            // if (wpPrev && bearingTrackTo && bearingTrackTo.additionalData.legType !== 14 /* HM */) {
+            //     const magVar = Facilities.getMagVar(wpPrev.infos.coordinates.lat, wpPrev.infos.coordinates.long);
+            //     switch (rowI) {
+            //         case 1:
+            //             if (fpm.getActiveWaypointIndex() === fpIndex) {
+            //                 const br = fpm.getBearingToActiveWaypoint();
+            //                 const bearing = A32NX_Util.trueToMagnetic(br, magVar);
+            //                 bearingTrack = `BRG${bearing.toFixed(0).toString().padStart(3,"0")}\u00b0`;
+            //             }
+            //             break;
+            //         case 2:
+            //             const tr = Avionics.Utils.computeGreatCircleHeading(wpPrev.infos.coordinates, bearingTrackTo.infos.coordinates);
+            //             const track = A32NX_Util.trueToMagnetic(tr, magVar);
+            //             bearingTrack = `{${fpm.isCurrentFlightPlanTemporary() ? "yellow" : "green"}}TRK${track.toFixed(0).padStart(3,"0")}\u00b0{end}`;
+            //             break;
+            //     }
+            // }
 
             if (wp && wp.isDiscontinuity === false) {
                 // Waypoint

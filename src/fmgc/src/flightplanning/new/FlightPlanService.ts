@@ -13,13 +13,18 @@ export class FlightPlanService {
     private constructor() {
     }
 
-    static flightPlanManager = new FlightPlanManager();
+    private static flightPlanManager = new FlightPlanManager();
 
     private static config: FpmConfig = A380FpmConfig
 
     static navigationDatabase: NavigationDatabase
 
     static version = 0;
+
+    static createFlightPlans() {
+        this.flightPlanManager.create(0);
+        this.flightPlanManager.create(1);
+    }
 
     static has(index: number) {
         return this.flightPlanManager.has(index);
