@@ -35,6 +35,10 @@ export abstract class BaseFlightPlan {
         return this.allLegs.length;
     }
 
+    get lastIndex() {
+        return Math.max(0, this.legCount - 1);
+    }
+
     get firstMissedApproachLeg() {
         return this.allLegs.length - this.missedApproachSegment.allLegs.length;
     }

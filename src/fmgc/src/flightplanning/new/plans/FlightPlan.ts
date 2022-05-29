@@ -64,7 +64,15 @@ export class FlightPlan extends BaseFlightPlan {
             throw new Error(`[FMS/FPM] Tried to insert waypoint out of bounds (index=${index})`);
         }
 
-        const [startSegment, indexInStartSegment] = this.getIndexInSegment(index);
+        let startSegment;
+        let indexInStartSegment;
+
+        if (this.legCount > 0) {
+            [startSegment, indexInStartSegment] = this.getIndexInSegment(index);
+        } else {
+            startSegment = this.enrouteSegment;
+            indexInStartSegment = 0;
+        }
 
         startSegment.insertAfter(indexInStartSegment, element);
 
@@ -82,8 +90,6 @@ export class FlightPlan extends BaseFlightPlan {
                 const [,, duplicatePlanIndex] = duplicate;
 
                 this.removeRange(index + 2, duplicatePlanIndex + 1);
-            } else {
-                startSegment.insertAfter(indexInStartSegment + 1, { isDiscontinuity: true });
             }
         }
 
@@ -106,7 +112,7 @@ export class FlightPlan extends BaseFlightPlan {
             }
         }
 
-        throw new Error(`[FMS/FPM] Tried to find segment for an out of bounds index (index=${index})`);
+        throw new Error(`[FMS/FPM] Tried to find index in segment for an out of bounds index (index=${index})`);
     }
 
     findDuplicate(waypoint: Waypoint, afterIndex?: number): [FlightPlanSegment, number, number] | null {

@@ -24,6 +24,7 @@ export class FlightPlanService {
     static createFlightPlans() {
         this.flightPlanManager.create(0);
         this.flightPlanManager.create(1);
+        this.flightPlanManager.create(2);
     }
 
     static has(index: number) {

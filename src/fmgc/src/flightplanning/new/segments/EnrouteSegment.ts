@@ -14,16 +14,6 @@ export class EnrouteSegment extends FlightPlanSegment {
 
     allLegs: FlightPlanElement[] = []
 
-    constructor(
-        flightPlan: BaseFlightPlan,
-    ) {
-        super(flightPlan);
-    }
-
-    insertWaypoint(waypoint: Waypoint) {
-        this.insertLeg(FlightPlanLeg.fromEnrouteWaypoint(this, waypoint));
-    }
-
     insertLeg(leg: FlightPlanLeg) {
         this.allLegs.push(leg);
     }

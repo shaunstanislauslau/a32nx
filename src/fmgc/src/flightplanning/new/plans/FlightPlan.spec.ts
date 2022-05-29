@@ -137,10 +137,10 @@ describe('a base flight plan', () => {
             const w3 = await loadSingleWaypoint('PBERG', 'WK6    PBERG');
             const w4 = await loadSingleWaypoint('HOVOB', 'WK6    HOVOB');
 
-            segment.insertWaypoint(w1);
-            segment.insertWaypoint(w2);
-            segment.insertWaypoint(w3);
-            segment.insertWaypoint(w4);
+            flightPlan.insertElementAfter(flightPlan.lastIndex, FlightPlanLeg.fromEnrouteWaypoint(segment, w1));
+            flightPlan.insertElementAfter(flightPlan.lastIndex, FlightPlanLeg.fromEnrouteWaypoint(segment, w2));
+            flightPlan.insertElementAfter(flightPlan.lastIndex, FlightPlanLeg.fromEnrouteWaypoint(segment, w3));
+            flightPlan.insertElementAfter(flightPlan.lastIndex, FlightPlanLeg.fromEnrouteWaypoint(segment, w4));
 
             const l1 = assertNotDiscontinuity(flightPlan.allLegs[0]);
             const l2 = assertNotDiscontinuity(flightPlan.allLegs[1]);

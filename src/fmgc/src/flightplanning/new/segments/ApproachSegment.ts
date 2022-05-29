@@ -34,6 +34,9 @@ export class ApproachSegment extends FlightPlanSegment {
             this.flightPlan.approachViaSegment.setApproachVia(undefined);
             this.approach = undefined;
             this.allLegs = this.createLegSet([]);
+
+            this.flightPlan.restring();
+
             return;
         }
 

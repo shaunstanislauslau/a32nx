@@ -26,9 +26,9 @@ describe('an enroute segment', () => {
         const w2 = await loadSingleWaypoint('NAPEE', 'WCY    NAPEE');
         const w3 = await loadSingleWaypoint('PBERG', 'WK6    PBERG');
 
-        segment.insertWaypoint(w1);
-        segment.insertWaypoint(w2);
-        segment.insertWaypoint(w3);
+        segment.insertLeg(FlightPlanLeg.fromEnrouteWaypoint(this, w1));
+        segment.insertLeg(FlightPlanLeg.fromEnrouteWaypoint(this, w2));
+        segment.insertLeg(FlightPlanLeg.fromEnrouteWaypoint(this, w3));
 
         const e0 = segment.allLegs[0];
         expect(e0.isDiscontinuity).toBeFalsy();

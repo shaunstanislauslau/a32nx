@@ -17,6 +17,10 @@ export abstract class FlightPlanSegment {
      */
     abstract get allLegs(): FlightPlanElement[]
 
+    get legCount() {
+        return this.allLegs.length;
+    }
+
     /**
      * Whether the segment has already been strung
      */
