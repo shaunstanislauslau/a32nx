@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 
-import { Airport, Runway } from 'msfs-navdata';
+import { Airport, Runway, WaypointDescriptor } from 'msfs-navdata';
 import { FlightPlanElement, FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { BaseFlightPlan } from '@fmgc/flightplanning/new/plans/BaseFlightPlan';
 import { SegmentClass } from '@fmgc/flightplanning/new/segments/SegmentClass';
@@ -42,7 +42,7 @@ export class DestinationSegment extends FlightPlanSegment {
 
         this.flightPlan.availableDestinationRunways = await loadAllRunways(this.destinationAirport);
 
-        await this.refreshDestinationLegs();
+        await this.refresh();
 
         this.flightPlan.availableArrivals = await loadAllArrivals(this.destinationAirport);
         this.flightPlan.availableApproaches = await loadAllApproaches(this.destinationAirport);
@@ -71,16 +71,23 @@ export class DestinationSegment extends FlightPlanSegment {
 
         this.runway = matchingRunway;
 
-        await this.refreshDestinationLegs();
+        await this.refresh();
     }
 
-    private async refreshDestinationLegs() {
+    private async refresh() {
         this.allLegs.length = 0;
 
-        if (this.airport) {
-            const approachName = this.flightPlan.approachSegment.approachProcedure?.ident ?? '';
+        const approach = this.flightPlan.approach;
 
-            this.allLegs.push(FlightPlanLeg.fromAirportAndRunway(this, approachName, this.airport, this.runway));
+        if (this.airport && approach) {
+            const approachName = approach.ident ?? '';
+
+            const lastApproachLeg = approach.legs[approach.legs.length - 1];
+            const lastApproachLegIsRunway = lastApproachLeg.waypointDescriptor === WaypointDescriptor.Runway;
+
+            if (lastApproachLegIsRunway) {
+                this.allLegs.push(FlightPlanLeg.fromAirportAndRunway(this, approachName, this.airport, this.runway));
+            }
         }
 
         this.flightPlan.availableApproaches = await loadAllApproaches(this.destinationAirport);

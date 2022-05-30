@@ -10,7 +10,7 @@ import { FlightPlan } from '@fmgc/flightplanning/new/plans/FlightPlan';
 import { loadSingleWaypoint } from '@fmgc/flightplanning/new/segments/enroute/WaypointLoading';
 import { FlightPlanLeg } from '@fmgc/flightplanning/new/legs/FlightPlanLeg';
 import { assertDiscontinuity, assertNotDiscontinuity } from '@fmgc/flightplanning/new/test/LegUtils';
-import { LegType } from 'msfs-navdata';
+import { LegType, WaypointDescriptor } from 'msfs-navdata';
 import { loadAirwayLegs } from '@fmgc/flightplanning/new/segments/enroute/AirwayLoading';
 
 if (!globalThis.fetch) {
@@ -202,5 +202,35 @@ describe('a base flight plan', () => {
         expect(assertNotDiscontinuity(leg4).type).toBe(LegType.TF);
         expect(assertNotDiscontinuity(leg5).ident).toBe('LAM/11');
         expect(assertNotDiscontinuity(leg5).type).toBe(LegType.FD);
+    });
+
+    describe('plan info', () => {
+        describe('destination leg', () => {
+            it('returns the right leg for an approach ending at the runway', async () => {
+                const fp = FlightPlan.empty();
+
+                await fp.setDestinationAirport('CYYZ');
+                await fp.setDestinationRunway('RW05');
+                await fp.setApproach('I05');
+
+                const destinationLeg = assertNotDiscontinuity(fp.destinationLeg);
+
+                expect(destinationLeg.ident).toBe('CYYZ05');
+                expect(destinationLeg.definition.waypointDescriptor).toEqual(WaypointDescriptor.Runway);
+            });
+
+            it('returns the right leg for an approach not ending at the runway', async () => {
+                const fp = FlightPlan.empty();
+
+                await fp.setDestinationAirport('NZQN');
+                await fp.setDestinationRunway('RW05');
+                await fp.setApproach('D05-B');
+
+                const destinationLeg = assertNotDiscontinuity(fp.destinationLeg);
+
+                expect(destinationLeg.ident).toBe('MA260');
+                expect(destinationLeg.definition.waypointDescriptor).not.toEqual(WaypointDescriptor.Runway);
+            });
+        });
     });
 });

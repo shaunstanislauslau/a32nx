@@ -96,7 +96,7 @@ export abstract class BaseFlightPlan {
     }
 
     get destinationLeg() {
-        return this.destinationSegment.allLegs[0];
+        return this.elementAt(this.destinationLegIndex);
     }
 
     get endsAtRunway() {
@@ -110,11 +110,21 @@ export abstract class BaseFlightPlan {
     }
 
     get destinationLegIndex() {
+        let targetSegment;
+
+        if (this.destinationSegment.allLegs.length > 0) {
+            targetSegment = this.destinationSegment;
+        } else if (this.approachSegment.allLegs.length > 0) {
+            targetSegment = this.approachSegment;
+        } else {
+            return -1;
+        }
+
         let accumulator = 0;
         for (const segment of this.orderedSegments) {
             accumulator += segment.allLegs.length;
 
-            if (segment === this.destinationSegment) {
+            if (segment === targetSegment) {
                 break;
             }
         }
